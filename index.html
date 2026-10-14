@@ -1,39 +1,39 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>小狐狸一键发币</title>
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.0/dist/ethers.umd.min.js"></script>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft Yahei", sans-serif; }
-body { background: linear-gradient(135deg,#0b1020,#171e38); min-height: 100vh; color:#fff; padding:30px 15px; }
-.container{ max-width:520px; margin:0 auto; }
-.header{ text-align:center; margin-bottom:35px; }
-.header h1{ font-size:32px; color:#f7c04a; margin-bottom:8px; }
-.fee-tip{ background: rgba(247,192,74,0.15); color: #f7c04a; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-size: 15px; }
-.card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:26px; margin-bottom:20px; }
-.form-item{ margin-bottom:20px; }
-label{ display:block; margin-bottom:8px; color:#d0d8f0; }
-input{ width:100%; padding:14px; border-radius:10px; border:1px solid #353f64; background:#141b33; color:#fff; font-size:16px; }
-.file-input{ padding:10px; background:#141b33; }
-.preview-box{ margin-top:10px; display:flex; gap:12px; align-items:center; }
-#logoPreview{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid #f7c04a; display:none; }
-.btn{ width:100%; padding:15px; border-radius:10px; border:none; font-size:17px; font-weight:bold; cursor:pointer; transition:0.2s; }
-.btn-connect{ background:#3b63e9; margin-bottom:16px; }
-.btn-deploy{ background:#f7c04a; color:#0a0e20; }
-.btn-admin{ background:#2ecc71; color:#000; margin-top:10px; }
-.btn:disabled{ opacity:0.55; cursor:not-allowed; }
-.status{ margin-top:20px; padding:14px; border-radius:10px; background:rgba(255,192,74,0.1); color:#f7d078; word-break: break-all; }
-.tip-text{ font-size:13px; color:#a0a8c2; margin-top:6px; }
-.connect-tip{ color:#66ff99; margin:8px 0; text-align:center; }
-.admin-panel{ display: none; border-top:1px solid #444; padding-top:20px; margin-top:20px; }
-</style>
-</head>
-<body>
-<div class="container">
-<div class="header">
-<h1>🦊小狐狸一键发币</h1>
+<！doctype 超文本标记语言>！doctype html>
+<超文本标记语言 朗="zh-CN">
+<头>
+<元 字符集="UTF-8">
+<元 姓名="视口" 内容="宽度=设备宽度，初始比例=1.0，最大比例=1.0，用户可缩放=否">
+<标题>小狐狸一键发币</标题>
+<脚本 src="https://cdn.jsdelivr.net/npm/ethers@6.13.0/dist/ethers.umd.min.js"></脚本>
+<风格>
+*{边缘：0；填充：0；箱体尺寸：边框框；字体系列："微软雅黑"，无衬线；}
+身体{背景：线性梯度(135deg,#0b1020,#171e38);最小高度：100VH；颜色：#FFF；填充：30px15px；}
+.容器{最大宽度：520PX；边缘：0自动；}
+.页眉{ 文本对齐:中心; 底边距:35PX; }
+.页眉H1{字体大小：32px；颜色：#f7c04a；底边距：8px；}
+.小费{背景：RGBA(247,192,74,0.15);颜色：#f7c04a；填充：10px；边界半径：8px；文本对齐：中心；底边距：20PX；字体大小：15px；}
+.卡片{背景:RGBA(255,255,255,0.05);边界：1PX固体RGBA(255,255,255,0.12);边界半径：16px；填充：26PX；底边距：20px；}
+.表单项目{底边距：20px；}
+标签{显示：块；底边距：8px；颜色：#d0d8f0；}
+输入{宽度：100%；填充：14px；边界半径：10px；边界：1PX固体#353f64；背景：#141b33；颜色：#FFF；字体大小：16px；}
+.文件输入{填充：10px；背景：#141b33；}
+。预览框{上边距：10px；显示：flex；间距：12px；对齐项：居中；}
+#logoPreview{width:64px；height:64px；border-roadus:50%；对象适合：cover；border:2px solid#f7c04a；display:none；}
+.BTN{宽度：100%；填充：15px；边框半径：10px；边框：无；字体大小：17px；字体粗细：粗体；光标：指针；过渡：0.2s；}
+。btn-connect{background：#3b63e9；margin-bottom:16px；}
+.btn-deploy{background：#f7c04a；color：#0a0e20；}
+.btn-admin{background：#2ecc71；color：#000；margin-top:10px；}
+.btn：禁用{不透明度：0.55；光标：不允许；}
+.status{上边距：20px；边距：14px；边框半径：10px；背景：rgba(255，192，74，0.1)；颜色：#f7d078；WORD-BREAK:break-all；}
+.tip-text{font-size:13px；color：#a0a8c2；上边距：6px；}
+.连接提示{color：#66ff99；margin:8px0；text-align:center；}
+.admin-panel{display:none；border-top:1px solid#444；padding-top:20px；margin-top:20px；}
+</风格>
+</头>
+<身体>
+<div 班级="容器">
+<div 班级="页眉">
+<H1>🦊小狐狸一键发币</H1>
 </div>
 <div class="fee-tip">发币服务费：0.005 BNB</div>
 
